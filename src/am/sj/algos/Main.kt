@@ -3,23 +3,7 @@ package am.sj.algos
 var textEdit = ""
 
 fun main(args: Array<String>) {
-    val items = mutableListOf<String>()
-    items.add(" x")
-    items.add(" y")
-    items.add("z")
-    items.add(" a")
-    items.add(" v")
-    val newItems = mutableListOf<String>()
-    val wasUnites = mutableListOf<Int>()
-    for (i in 0 until items.size) {
-        if (i+1 < items.size && items[i + 1].contains(" ") && items[i].contains(" ")) {
-            newItems.add("${items[i]}${items[i + 1]}")
-            wasUnites.add(i)
-            wasUnites.add(i+1)
-        }
-        if(!wasUnites.contains(i)) newItems.add(items[i])
-    }
-    print(newItems)
+
 }
 
 var added: Int = 0
@@ -78,15 +62,20 @@ fun onTextChanged(s: String, strt: Int, before: Int, count: Int) {
  */
 fun concatTextItems() {
     val items = mutableListOf<String>()
-    items.add("x")
+    items.add(" x")
     items.add(" y")
     items.add("z")
+    items.add(" a")
+    items.add(" v")
     val newItems = mutableListOf<String>()
-    for (i in 1 until items.size) {
-        if (items[i - 1].contains(" "))
-            newItems.add("${items[i - 1]}${items[i]}")
-        else
-            newItems.add(items[i - 1])
+    val wasUnites = mutableListOf<Int>()
+    for (i in 0 until items.size) {
+        if (i+1 < items.size && items[i + 1].contains(" ") && items[i].contains(" ")) {
+            newItems.add("${items[i]}${items[i + 1]}")
+            wasUnites.add(i)
+            wasUnites.add(i+1)
+        }
+        if(!wasUnites.contains(i)) newItems.add(items[i])
     }
     print(newItems)
 }
