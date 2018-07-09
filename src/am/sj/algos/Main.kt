@@ -3,12 +3,29 @@ package am.sj.algos
 var textEdit = ""
 
 fun main(args: Array<String>) {
-
+    val items = mutableListOf<String>()
+    items.add(" x")
+    items.add(" y")
+    items.add("z")
+    items.add(" a")
+    items.add(" v")
+    val newItems = mutableListOf<String>()
+    val wasUnites = mutableListOf<Int>()
+    for (i in 0 until items.size) {
+        if (i+1 < items.size && items[i + 1].contains(" ") && items[i].contains(" ")) {
+            newItems.add("${items[i]}${items[i + 1]}")
+            wasUnites.add(i)
+            wasUnites.add(i+1)
+        }
+        if(!wasUnites.contains(i)) newItems.add(items[i])
+    }
+    print(newItems)
 }
 
 var added: Int = 0
 var removed: Int = 0
 var replaced: Int = 0
+var beforeReplace: Int = 0
 var start: Int = 0
 
 fun beforeTextChanged(s: String, stt: Int, count: Int, after: Int) {
@@ -16,6 +33,7 @@ fun beforeTextChanged(s: String, stt: Int, count: Int, after: Int) {
     added = if (count == 0) after else 0
     removed = if (after == 0) count else 0
     replaced = if (count != 0 && after != 0) after else 0 // from $start $count symbols replaced by $after
+    beforeReplace = if (replaced != 0) count else 0
 }
 
 fun onTextChanged(s: String, strt: Int, before: Int, count: Int) {
@@ -38,63 +56,74 @@ fun onTextChanged(s: String, strt: Int, before: Int, count: Int) {
      *      on click user - set id and set text
      */
 
+    // close item on user click
+
     if (added == 1) {
         if (s[start] == '@' /*... many conditions */) {
-            openItem(start)
+            openUserItem(start)
             queryUser()
         }
     } else {
-        if (added != 0) {
-            if (editAddToUser(s, start, start + added)) {
-                queryUser()
-            } else { // edit text item
-                editText(s, start, start + added)
-            }
-        }
-        if (removed != 0) {
-            if (editRemoveFromUser(s, start, start + removed)) { // if user removed - concat with text
-                queryUser()
-            } else { // edit text item
-                editText(s, start, start + added)
-            }
-        }
-        if (replaced != 0) {
-
-        }
+        if (added != 0) editAdd(s, start, added)
+        if (removed != 0) editRemoved(s, start, removed) // if user removed - concat with text
+        if (replaced != 0) editReplace(s, start, before, replaced)
     }
 
-    showRich()
     concatTextItems()
+    showRich()
 }
 
+/**
+ * iterate through list and concat neighbor text items
+ */
 fun concatTextItems() {
-
+    val items = mutableListOf<String>()
+    items.add("x")
+    items.add(" y")
+    items.add("z")
+    val newItems = mutableListOf<String>()
+    for (i in 1 until items.size) {
+        if (items[i - 1].contains(" "))
+            newItems.add("${items[i - 1]}${items[i]}")
+        else
+            newItems.add(items[i - 1])
+    }
+    print(newItems)
 }
 
-fun editRemoveFromUser(s: String, start: Int, count: Int): Boolean {
-    return false
+fun editAdd(newString: String, start: Int, count: Int) {
+    /**
+     * find item with this start
+     *  if it's user - edit and request it
+     * text - add text to it
+     * */
 }
 
-fun editText(s: String, start: Int, count: Int) {
-
+fun editRemoved(newString: String, start: Int, count: Int) {
+    /**
+     *  find item where symbols removed
+     *  if > 1 items are touched, edit them
+     *  if user edited - remove id from it and replace with text item
+     *  can remove whole items
+     * */
 }
 
-fun editAddToUser(s: String, start: Int, count: Int): Boolean {
-    return false
+fun editReplace(newString: String, start: Int, countWas: Int, countNow: Int) {
+    editRemoved(textEdit, start, countWas)
+    editAdd(newString, start, countNow)
 }
 
 fun showRich() {
-
+    // set spannable to edittext
 }
 
 fun queryUser() {
 
 }
 
-fun openItem(start: Int) {
+fun openUserItem(start: Int) {
 
 }
-
 
 fun symbolsAdded(before: Int, count: Int): Int {
     return count - before
